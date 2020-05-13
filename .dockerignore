@@ -1,2 +1,14 @@
 node_modules
 npm-debug.log
+ci
+media
+Dockerfile*
+docker-compose*
+.git
+.gitignore
+.github
+README.md
+readme-ci.md
+LICENSE
+.vscode
+.nvmrc

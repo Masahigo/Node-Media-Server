@@ -1,0 +1,22 @@
+name: Custom nms image
+
+on:
+  push:
+    branches: [ master ]
+    paths:
+    - 'app.js'
+    - 'Dockerfile'
+    - 'package.json'
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - name: 'Checkout'
+      uses: actions/checkout@v2
+    - name: 'Build and push to Docker Hub'
+      uses: docker/build-push-action@v1
+      with:
+        username: 'masahigo'
+        password: ${{ secrets.DOCKERHUB_PASSWORD }}
+        repository: masahigo/node-media-server
+        tags: latest

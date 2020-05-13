@@ -1,4 +1,6 @@
 const NodeMediaServer = require('./');
+const MediaRoot = process.env.MEDIA_ROOT || './media'
+const FfmpegPath = process.env.FFMPEG_PATH || '/usr/bin/ffmpeg'
 
 const config = {
   rtmp: {
@@ -10,24 +12,19 @@ const config = {
   },
   http: {
     port: 8000,
-    mediaroot: './media',
-    webroot: './www',
-    allow_origin: '*',
-    api: true
+    mediaroot: MediaRoot,
+    allow_origin: '*'
   },
-  https: {
-    port: 8443,
-    key: './privatekey.pem',
-    cert: './certificate.pem',
-  },
-  auth: {
-    api: true,
-    api_user: 'admin',
-    api_pass: 'admin',
-    play: false,
-    publish: false,
-    secret: 'nodemedia2017privatekey'
-  },
+  trans: {
+    ffmpeg: FfmpegPath,
+    tasks: [
+      {
+        app: 'live',
+        mp4: true,
+        mp4Flags: '[movflags=faststart]',
+      }
+    ]
+  }
 };
 
 
