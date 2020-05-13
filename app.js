@@ -2,6 +2,16 @@ const NodeMediaServer = require('./');
 const MediaRoot = process.env.MEDIA_ROOT || './media'
 const FfmpegPath = process.env.FFMPEG_PATH || '/usr/bin/ffmpeg'
 
+// Ensure required ENV vars are set
+let requiredEnv = [
+  'AUTH_SECRET'
+];
+let unsetEnv = requiredEnv.filter((env) => !(typeof process.env[env] !== 'undefined'));
+
+if (unsetEnv.length > 0) {
+  throw new Error("Required ENV variables are not set: [" + unsetEnv.join(', ') + "]");
+}
+
 const config = {
   rtmp: {
     port: 1935,
@@ -24,6 +34,11 @@ const config = {
         mp4Flags: '[movflags=faststart]',
       }
     ]
+  },
+  auth: {
+    play: true,
+    publish: true,
+    secret: process.env.AUTH_SECRET
   }
 };
 

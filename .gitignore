@@ -34,3 +34,6 @@ node_modules
 
 # Local media files
 media
+
+# CI scripts (until finished and secure)
+ci
