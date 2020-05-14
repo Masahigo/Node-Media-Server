@@ -10,6 +10,7 @@ const { spawn } = require('child_process');
 const dateFormat = require('dateformat');
 const mkdirp = require('mkdirp');
 const fs = require('fs');
+const context = require("./node_core_ctx");
 
 class NodeTransSession extends EventEmitter {
   constructor(conf) {
@@ -95,6 +96,7 @@ class NodeTransSession extends EventEmitter {
   }
 
   end() {
+    context.nodeEvent.emit("doneTransSession", this.conf.streamPath);
     // this.ffmpeg_exec.kill();
   }
 }

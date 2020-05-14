@@ -37,3 +37,6 @@ media
 
 # CI scripts (until finished and secure)
 ci
+
+# Environment variables
+.env

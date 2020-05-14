@@ -12,3 +12,4 @@ readme-ci.md
 LICENSE
 .vscode
 .nvmrc
+.env

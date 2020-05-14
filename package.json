@@ -22,12 +22,15 @@
   },
   "homepage": "https://github.com/illuspas/Node-Media-Server#readme",
   "dependencies": {
+    "@azure/storage-blob": "^12.1.1",
     "basic-auth-connect": "^1.0.0",
     "chalk": "^2.4.2",
     "dateformat": "^3.0.3",
     "express": "^4.16.4",
+    "into-stream": "^5.1.1",
     "lodash": ">=4.17.13",
     "mkdirp": "1.0.3",
+    "path": "^0.12.7",
     "ws": "^5.2.2"
   },
   "engines": {
