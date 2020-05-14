@@ -150,30 +150,33 @@ async function uploadToAzureBlobStorage(StreamPath){
   let files = await readdirAsync(ouPath);
 
   for (const filename of files) {
-    console.log('[Uploading ' + filename + ' to Azure Blob Storage..]');
-    let filepath = ouPath + '/' + filename;
-    data = await readFile(filepath);
-    console.log(`mp4 buffer length：${data.length}`);
-    if(data.length > 0) {
-      let stream = getStream(data);
-      
+    if (filename.endsWith('.mp4')) {
+
       let containerName = path.basename(StreamPath);
       let containerClient = blobServiceClient.getContainerClient(containerName);
-      const createContainerResponse = await containerClient.create();
-      console.log(`Create container ${containerName} successfully`, createContainerResponse.requestId);
-
-      let blockBlobClient = containerClient.getBlockBlobClient(filename);
-
-      try {
-        console.log(`Start file upload!`);
-        const uploadBlobResponse = await blockBlobClient.uploadStream(stream, uploadOptions.bufferSize, 5, { blobHTTPHeaders: { blobContentType: "video/mp4" } });
-        console.log(`Upload block blob ${filename} successfully`, uploadBlobResponse.requestId);
+      if(!(await containerClient.exists())) {
+        const createContainerResponse = await containerClient.create();
+        console.log(`Create container ${containerName} successfully`, createContainerResponse.requestId);  
       }
-      catch(err) {
-        console.log(err)
+
+      let filepath = ouPath + '/' + filename;
+      data = await readFile(filepath);
+      console.log(`mp4 buffer length：${data.length}`);
+      if(data.length > 0) {
+        let stream = getStream(data);
+        let blockBlobClient = containerClient.getBlockBlobClient(filename);
+
+        try {
+          console.log('[Uploading ' + filename + ' to Azure Blob Storage..]');
+          const uploadBlobResponse = await blockBlobClient.uploadStream(stream, uploadOptions.bufferSize, 5, { blobHTTPHeaders: { blobContentType: "video/mp4" } });
+          console.log(`Upload block blob ${filename} successfully`, uploadBlobResponse.requestId);
+        }
+        catch(err) {
+          console.log(err)
+        }
+        
+        // TODO: clean out copied file from mediaroot?
       }
-      
-      // TODO: clean out copied file from mediaroot?
     }
   }
 
