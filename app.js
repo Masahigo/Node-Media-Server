@@ -35,6 +35,8 @@ if (unsetEnv.length > 0) {
   throw new Error("Required ENV variables are not set: [" + unsetEnv.join(', ') + "]");
 }
 
+// Optimize encoding for H.264: https://trac.ffmpeg.org/wiki/Encode/H.264
+
 const config = {
   rtmp: {
     port: 1935,
@@ -53,6 +55,8 @@ const config = {
     tasks: [
       {
         app: 'live',
+        vc: "copy",
+        vcParam: ['-preset', 'slow', '-crf', '22'],
         mp4: true,
         mp4Flags: '[movflags=faststart]',
       }
