@@ -169,14 +169,17 @@ async function uploadToAzureBlobStorage(StreamPath){
       if(data.length > 0) {
         let stream = getStream(data);
         let blockBlobClient = containerClient.getBlockBlobClient(filename);
-
-        try {
-          console.log('[Uploading ' + filename + ' to Azure Blob Storage..]');
-          const uploadBlobResponse = await blockBlobClient.uploadStream(stream, uploadOptions.bufferSize, 5, { blobHTTPHeaders: { blobContentType: "video/mp4" } });
-          console.log(`Upload block blob ${filename} successfully`, uploadBlobResponse.requestId);
-        }
-        catch(err) {
-          console.log(err)
+        
+        // if blob already exists no need to copy it again
+        if(!(await blockBlobClient.exists())) {
+          try {
+            console.log('[Uploading ' + filename + ' to Azure Blob Storage..]');
+            const uploadBlobResponse = await blockBlobClient.uploadStream(stream, uploadOptions.bufferSize, 5, { blobHTTPHeaders: { blobContentType: "video/mp4" } });
+            console.log(`Upload block blob ${filename} successfully`, uploadBlobResponse.requestId);
+          }
+          catch(err) {
+            console.log(err)
+          }
         }
         
         // TODO: clean out copied file from mediaroot?
