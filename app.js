@@ -5,29 +5,24 @@ const fs = require('fs');
 const path = require('path');
 const getStream = require('into-stream');
 
-const {
-  BlobServiceClient,
-  AnonymousCredential
-} = require('@azure/storage-blob');
+const { BlobServiceClient } = require("@azure/storage-blob");
+const { DefaultAzureCredential } = require("@azure/identity");
 
 const ONE_MEGABYTE = 1024 * 1024;
 const uploadOptions = { bufferSize: 8 * ONE_MEGABYTE, maxBuffers: 20 };
 const sleep = (waitTimeInMs) => new Promise(resolve => setTimeout(resolve, waitTimeInMs));
 
 const account = process.env.AZURE_STORAGE_ACCOUNT_NAME || "";
-const accountSas = process.env.AZURE_STORAGE_ACCOUNT_SAS || "";
+const defaultAzureCredential = new DefaultAzureCredential();
 
-// Use AnonymousCredential when url already includes a SAS signature
-const anonymousCredential = new AnonymousCredential();
 const blobServiceClient = new BlobServiceClient(
-  // When using AnonymousCredential, following url should include a valid SAS or support public access
-  `https://${account}.blob.core.windows.net?${accountSas}`,
-  anonymousCredential
+  `https://${account}.blob.core.windows.net`,
+  defaultAzureCredential
 );
 
 // Ensure required ENV vars are set
 let requiredEnv = [
-  'AUTH_SECRET','AZURE_STORAGE_ACCOUNT_NAME','AZURE_STORAGE_ACCOUNT_SAS'
+  'AUTH_SECRET','AZURE_TENANT_ID','AZURE_CLIENT_ID','AZURE_CLIENT_SECRET'
 ];
 let unsetEnv = requiredEnv.filter((env) => !(typeof process.env[env] !== 'undefined'));
 
@@ -161,6 +156,8 @@ function removeFile(path) {
 }
 
 async function uploadToAzureBlobStorage(StreamPath){
+  console.log('[uploadToAzureBlobStorage]', `StreamPath=${StreamPath}`);
+
   let ouPath = `${config.http.mediaroot}${StreamPath}`;
   let files = await readdirAsync(ouPath);
 
@@ -171,12 +168,12 @@ async function uploadToAzureBlobStorage(StreamPath){
       let containerClient = blobServiceClient.getContainerClient(containerName);
       if(!(await containerClient.exists())) {
         const createContainerResponse = await containerClient.create();
-        console.log(`Create container ${containerName} successfully`, createContainerResponse.requestId);  
+        console.log(`[uploadToAzureBlobStorage] Create container ${containerName} successfully`, createContainerResponse.requestId);  
       }
 
       let filepath = ouPath + '/' + filename;
       data = await readFile(filepath);
-      console.log(`mp4 buffer length：${data.length}`);
+      console.log(`[uploadToAzureBlobStorage] mp4 buffer length：${data.length}`);
       if(data.length > 0) {
         let stream = getStream(data);
         let blockBlobClient = containerClient.getBlockBlobClient(filename);
@@ -184,9 +181,9 @@ async function uploadToAzureBlobStorage(StreamPath){
         // if blob already exists no need to copy it again
         if(!(await blockBlobClient.exists())) {
           try {
-            console.log('[Uploading ' + filename + ' to Azure Blob Storage..]');
+            console.log('[uploadToAzureBlobStorage] Uploading ' + filename + ' to Azure Blob Storage..');
             const uploadBlobResponse = await blockBlobClient.uploadStream(stream, uploadOptions.bufferSize, 5, { blobHTTPHeaders: { blobContentType: "video/mp4" } });
-            console.log(`Upload block blob ${filename} successfully`, uploadBlobResponse.requestId);
+            console.log(`[uploadToAzureBlobStorage] Upload block blob ${filename} successfully`, uploadBlobResponse.requestId);
           }
           catch(err) {
             console.log(err)
@@ -194,10 +191,11 @@ async function uploadToAzureBlobStorage(StreamPath){
         }
         
         // Cleanup
-        console.log(`Remove file from MediaRoot: ${filepath}`);
+        console.log(`[uploadToAzureBlobStorage] Remove file ${filepath} from MediaRoot..`);
         await removeFile(filepath);
       }
     }
   }
 
+  console.log(`[uploadToAzureBlobStorage] Completed!`);
 }
