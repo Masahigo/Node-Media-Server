@@ -149,8 +149,19 @@ function readFile(path) {
   });
 }
 
+function removeFile(path) {
+  return new Promise((resolve, reject) => {
+    fs.unlink(path, function (err, data) {
+      if (err) {
+        reject(err);
+      }
+      resolve(data);
+    });
+  });
+}
+
 async function uploadToAzureBlobStorage(StreamPath){
-  let ouPath = `${config.http.mediaroot}/${StreamPath}`;
+  let ouPath = `${config.http.mediaroot}${StreamPath}`;
   let files = await readdirAsync(ouPath);
 
   for (const filename of files) {
@@ -182,7 +193,9 @@ async function uploadToAzureBlobStorage(StreamPath){
           }
         }
         
-        // TODO: clean out copied file from mediaroot?
+        // Cleanup
+        console.log(`Remove file from MediaRoot: ${filepath}`);
+        await removeFile(filepath);
       }
     }
   }

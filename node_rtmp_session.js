@@ -201,8 +201,11 @@ class NodeRtmpSession {
         this.pingInterval = null;
       }
 
-      Logger.log(`[rtmp disconnect] id=${this.id}`);
-      context.nodeEvent.emit("doneConnect", this.id, this.connectCmdObj);
+      // Prevents unnecessary logging generated from socket connections
+      if(typeof this.connectCmdObj !== 'undefined') {
+        Logger.log(`[rtmp disconnect] id=${this.id}`);
+        context.nodeEvent.emit("doneConnect", this.id, this.connectCmdObj);
+      }
 
       context.sessions.delete(this.id);
       this.socket.destroy();
