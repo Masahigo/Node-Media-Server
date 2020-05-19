@@ -1,9 +1,11 @@
-# Misc instructions
+# Instructions for working with Docker and Azure blob storage
 
 ## Prerequisites
 
 - Docker
-- Create Azure AD app following the instructions from here: https://github.com/Azure/azure-sdk-for-js/blob/master/sdk/storage/storage-blob/samples/javascript/azureAdAuth.js
+- Azure resources
+  * Through [CI script](/ci/README.MD) and grabbing the `appId`, `password` and `tenant` values from newly created _SPN_
+  * Azure AD app can also be created manually following the instructions from here: https://github.com/Azure/azure-sdk-for-js/blob/master/sdk/storage/storage-blob/samples/javascript/azureAdAuth.js
 - Configure `.env` file with following values
 
 ```text
@@ -19,7 +21,7 @@ AZURE_CLIENT_SECRET=<your Azure AD app's client secret>
 ```bash
 # npm i
 docker build -t node-media-server .
-docker run -e --env-file ./.env --name nms -d -p 1935:1935 -p 8000:8000 node-media-server
+docker run --env-file ./.env --name nms -d -p 1935:1935 -p 8000:8000 node-media-server
 docker logs nms -f
 
 # Generate hash
