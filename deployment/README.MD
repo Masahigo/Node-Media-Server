@@ -1,12 +1,13 @@
-# Instructions for CI
+# Instructions for Azure deployment
 
-You can setup your own custom rtmp to run in ACI using the script and templates found in this folder.
+You can setup your own custom rtmp to run in ACI using the scripts and templates referenced here.
 
 **Prerequisites**
 
 - Azure CLI
 - Azure Subscription and Owner role to it
 - Permissions to create Service Principals to the Azure AD tenant
+- OBS Studio for testing (optional)
 
 ## Creating supporting resources for hosting the app in Azure Container Instance
 
@@ -53,11 +54,26 @@ Edit the ACI's configuration file `node-media-server.yaml` and replace all the v
 # Use the resource group name stored in env variable in previous step
 az container create --resource-group $RESOURCE_GROUP_NAME -f node-media-server.yaml
 
-# Get the ACI's url after deployment
+# Get the ACI's address info after deployment
 az container show -g $RESOURCE_GROUP_NAME -n node-media-server --query ipAddress
 
 # See LA Logs for ACI
 # https://docs.microsoft.com/en-us/azure/container-instances/container-instances-log-analytics#view-logs
 # https://docs.microsoft.com/en-us/azure/azure-monitor/log-query/examples
+
+```
+
+**Testing from OBS Studio**
+
+```bash
+# Generate hash - make sure to use your own key
+$ node genObsAuth.js
+
+# Query custom rtmp hostname using Azure CLI
+az container show -g $RESOURCE_GROUP_NAME -n node-media-server --query ipAddress.fqdn -o tsv
+
+# Test from OBS Studio: Settings > Stream
+# Server: rtmp://<your rtmp hostname>/live
+# Stream key: obs?sign=<copy paste hash from genObsAuth.js here>
 
 ```

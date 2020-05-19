@@ -11,7 +11,7 @@ properties:
         - name: 'MEDIA_ROOT'
           value: '/aci/media'
         - name: 'AUTH_SECRET'
-          secureValue: '<your private key used for auth>'
+          secureValue: '<your private key used for auth, replace also in genObsAuth.js when testing>'
         - name: 'AZURE_STORAGE_ACCOUNT_NAME'
           secureValue: '<paste value from ACI_PERS_STORAGE_ACCOUNT_NAME here>'
         - name: 'AZURE_TENANT_ID'
@@ -20,7 +20,7 @@ properties:
           secureValue: '<paste value from SPN appId here>'
         - name: 'AZURE_CLIENT_SECRET'
           secureValue: '<paste value from SPN password here>'
-      image: masahigo/node-media-server:latest
+      image: <your Docker hub account>/node-media-server:latest
       ports:
         - port: 80
         - port: 1935

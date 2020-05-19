@@ -2,9 +2,10 @@
 
 ## Prerequisites
 
-- Docker
+- Docker runtime
+- Account in Docker Hub
 - Azure resources
-  * Through [CI script](/ci/README.MD) and grabbing the `appId`, `password` and `tenant` values from newly created _SPN_
+  * Through [deployment script](/deployment/README.MD) and grabbing the `appId`, `password` and `tenant` values from newly created _SPN_
   * Azure AD app can also be created manually following the instructions from here: https://github.com/Azure/azure-sdk-for-js/blob/master/sdk/storage/storage-blob/samples/javascript/azureAdAuth.js
 - Configure `.env` file with following values
 
@@ -34,6 +35,8 @@ node genDummyAuth.js
 
 ## Push to Docker Hub
 
+```bash
 docker login
-docker tag <your image id> masahigo/node-media-server:latest
-docker push masahigo/node-media-server
+docker tag <your image id> <your account>/node-media-server:latest
+docker push <your account>/node-media-server
+```
