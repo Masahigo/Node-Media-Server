@@ -45,7 +45,7 @@ create_new_app(){
     else
         echo "${1} does not exist, creating ${1}.."
         echo "Create AAD App registration"
-        az ad app create --display-name $1 --homepage "http://localhost/$1" --identifier-uris "http://localhost/$1" --output none
+        az ad app create --display-name $1 --homepage "http://localhost/$1" --identifier-uris "http://localhost/$1" --password $5 --output none
         APP_ID=$(az ad app list --display-name ${1} --query [0].appId -o tsv)
         
         echo "Apply needed API permissions"
@@ -72,6 +72,7 @@ create_new_app(){
 # Use year and current month as guid
 guid=$(date '+%Y-%m')
 
+APP_PWD=$(head /dev/urandom | tr -dc A-Za-z0-9 | head -c 13 ; echo '')
 APP_NAME="custom-rtmp-app-$guid"
-echo "Creating app for $APP_NAME.."
-create_new_app $APP_NAME $SUB_ID $ACI_PERS_RESOURCE_GROUP $ACI_PERS_STORAGE_ACCOUNT_NAME
+echo "Creating app (SPN) for $APP_NAME with password $APP_PWD.."
+create_new_app $APP_NAME $SUB_ID $ACI_PERS_RESOURCE_GROUP $ACI_PERS_STORAGE_ACCOUNT_NAME $APP_PWD

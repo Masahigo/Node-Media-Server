@@ -15,11 +15,11 @@ properties:
         - name: 'AZURE_STORAGE_ACCOUNT_NAME'
           secureValue: '<paste value from ACI_PERS_STORAGE_ACCOUNT_NAME here>'
         - name: 'AZURE_TENANT_ID'
-          secureValue: '<paste value from SPN tenant here>'
+          secureValue: '<paste value for your tenant id here>'
         - name: 'AZURE_CLIENT_ID'
-          secureValue: '<paste value from SPN appId here>'
+          secureValue: '<paste value from APP_NAME here>'
         - name: 'AZURE_CLIENT_SECRET'
-          secureValue: '<paste value from SPN password here>'
+          secureValue: '<paste value from APP_PWD here>'
       image: <your Docker hub account>/node-media-server:latest
       ports:
         - port: 80
