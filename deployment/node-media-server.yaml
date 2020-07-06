@@ -22,7 +22,6 @@ properties:
           secureValue: '<paste value from APP_PWD here>'
       image: <your Docker hub account>/node-media-server:latest
       ports:
-        - port: 80
         - port: 1935
       resources:
         requests:
@@ -41,8 +40,6 @@ properties:
     type: Public
     dnsNameLabel: <your dns name label> #this must be unique in azure region
     ports:
-    - protocol: tcp
-      port: '80'
     - protocol: tcp
       port: '1935'
   volumes:

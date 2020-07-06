@@ -26,6 +26,6 @@ COPY --from=install-npm /app/node_modules /app/node_modules
 # Setup workdir
 COPY . /app
 
-EXPOSE 1935 8000
+EXPOSE 1935
 
 CMD ["node","app.js"]

@@ -22,7 +22,7 @@ AZURE_CLIENT_SECRET=<your Azure AD app's client secret>
 ```bash
 # npm i
 docker build -t node-media-server .
-docker run --env-file ./.env --name nms -d -p 1935:1935 -p 8000:8000 node-media-server
+docker run --env-file ./.env --name nms -d -p 1935:1935 node-media-server
 docker logs nms -f
 
 # Generate hash
